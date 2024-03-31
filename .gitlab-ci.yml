@@ -1,0 +1,30 @@
+stages:
+  - validate
+  - deploy
+
+validate-template:
+  stage: validate
+  image: python:3.8
+  script:
+    - pip install awscli
+    - aws cloudformation validate-template --template-body file://template.ymal
+  only:
+    - main
+
+deploy-template:
+  stage: deploy
+  image: python:3.8
+  script:
+    - pip install awscli
+    - aws cloudformation deploy --template-file template.ymal --stack-name wordpress-stack --parameter-overrides KeyName=myKey InstanceType=t2.small DBPassword=securepassword DBRootPassword=evenmoresecurepassword --capabilities CAPABILITY_IAM
+  only:
+    - main
+  when: manual
+
+validate_cloudformation:
+  stage: validate
+  image: amazon/aws-cli
+  script:
+    - aws cloudformation validate-template --template-body file:///Users/ibraheem.izah/Library/CloudStorage/OneDrive-MagellanXPte.Ltd/Documents/wordpress/template.yaml
+  only:
+    - master
