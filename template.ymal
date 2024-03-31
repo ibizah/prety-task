@@ -376,5 +376,42 @@
       "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, "/wordpress" ]]},
       "Description" : "WordPress Website"
     }
+  },
+
+  "HighCPUAlarm": {
+  "Type": "AWS::CloudWatch::Alarm",
+  "Properties": {
+    "AlarmDescription": "Alarm if CPU too high or metric disappears indicating instance is down",
+    "MetricName": "CPUUtilization",
+    "Namespace": "AWS/EC2",
+    "Statistic": "Average",
+    "Period": "300",
+    "EvaluationPeriods": "1",
+    "Threshold": "70",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "AlarmActions": [ { "Ref": "CPUNotificationTopic" } ],
+    "Dimensions": [
+      {
+        "Name": "InstanceId",
+        "Value": { "Ref": "WebServer" }
+      }
+    ]
   }
+},
+"CPUNotificationTopic": {
+  "Type": "AWS::SNS::Topic",
+  "Properties": {
+    "DisplayName": "CPU Utilization Notification",
+    "Subscription": [
+      {
+        "Protocol": "email",
+        "Endpoint": ""
+      },
+      {
+        "Protocol": "lambda",
+        "Endpoint": "arn:aws:lambda:region:account-id:function:yourLambdaFunction" // For Slack integration via Lambda
+      }
+    ]
+  }
+}
 }
