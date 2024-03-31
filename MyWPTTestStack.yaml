@@ -1,0 +1,10 @@
+template-file-path: https://github.com/ibizah/prety-task/blob/main/template.ymal
+parameters:
+  KeyName: Preethi_mumbai
+  SSHLocation: 0.0.0.0/0
+  DBPassword: '****'
+  DBName: wordpressdb
+  DBUser: '****'
+  DBRootPassword: '****'
+  InstanceType: t2.small
+tags: {}
